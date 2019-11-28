@@ -1,13 +1,20 @@
 var http = require("http");
-var fs = require("fs");
+const requestIp = require('request-ip');
 
 // create a http server
 http
   .createServer(function (req, res) {
-    var ip = "2.80.139.55"; //var ip = "71.205.238.210";
+    var ip = "127.0.0.1";
     if (req.socket.remoteAddress == ip) console.log("hit!!!!");
     var newLocal = req.connection.remoteAddress.substring(7);
-    console.log(req.connection);
+    console.log("remote address:" + req.socket.remoteAddress);
+    console.log("remote port:" + req.socket.remotePort);
+    console.log("remote family:" + req.socket.remoteFamily);
+    const ipMiddleware = function (req, res, next) {
+      const clientIp = requestIp.getClientIp(req);
+      console.log(clientIp);
+      next();
+    };
     //if (req.url == '/page-c.html') {
     if (newLocal == ip) {
       // redirect to page-b.html with 301 (Moved Permanently) HTTP code in the response
